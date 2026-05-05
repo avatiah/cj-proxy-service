@@ -1,5 +1,5 @@
 export default async function handler(req, res) {
-  // Разрешаем запросы от расширения
+  // Разрешаем расширению получать данные через этот прокси
   res.setHeader('Access-Control-Allow-Credentials', true);
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,POST');
@@ -12,7 +12,7 @@ export default async function handler(req, res) {
   const CJ_API_KEY = process.env.CJ_API_KEY;
 
   try {
-    // 1. Получаем токен (без симуляций)
+    // 1. Получаем токен доступа (без симуляций и заглушек)
     const authRes = await fetch('https://developers.cjdropshipping.com/api2.0/v1/authentication/getAccessToken', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -20,10 +20,10 @@ export default async function handler(req, res) {
     });
     const authData = await authRes.json();
     
-    if (!authData.result) throw new Error('CJ Auth Failed');
+    if (!authData.result) throw new Error('Ошибка авторизации CJ');
     const token = authData.data.accessToken;
 
-    // 2. Ищем реальный товар по названию[cite: 1]
+    // 2. Ищем реальный товар по названию
     const searchRes = await fetch(`https://developers.cjdropshipping.com/api2.0/v1/product/list?productName=${encodeURIComponent(productName)}&pageSize=5`, {
       method: 'GET',
       headers: { 'CJ-Access-Token': token }
