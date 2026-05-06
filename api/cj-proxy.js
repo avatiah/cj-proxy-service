@@ -12,7 +12,7 @@ export default async function handler(req, res) {
   const CJ_API_KEY = process.env.CJ_API_KEY;
 
   try {
-    // Получаем токен на сервере (тут CORS не действует)
+    // 1. Получаем токен на сервере (тут CORS не действует)
     const authRes = await fetch('https://developers.cjdropshipping.com/api2.0/v1/authentication/getAccessToken', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -23,7 +23,7 @@ export default async function handler(req, res) {
     if (!authData.result) throw new Error('CJ Auth Failed');
     const token = authData.data.accessToken;
 
-    // Ищем реальные товары
+    // 2. Ищем реальные товары по API
     const searchRes = await fetch(`https://developers.cjdropshipping.com/api2.0/v1/product/list?productName=${encodeURIComponent(productName)}&pageSize=5`, {
       method: 'GET',
       headers: { 'CJ-Access-Token': token }
