@@ -1,5 +1,5 @@
 export default async function handler(req, res) {
-  // Эти заголовки разрешают расширению получать ответ
+  // Разрешаем вашему расширению получать ответ
   res.setHeader('Access-Control-Allow-Credentials', true);
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,POST');
@@ -8,12 +8,11 @@ export default async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
 
   const { productName } = req.query;
-  // Ключи берутся из Environment Variables вашего проекта на Vercel[cite: 1, 3]
   const CJ_EMAIL = process.env.CJ_EMAIL;
   const CJ_API_KEY = process.env.CJ_API_KEY;
 
   try {
-    // 1. Получаем токен от CJ на стороне сервера (тут CORS не действует)[cite: 1, 3]
+    // 1. Получаем токен (на сервере это разрешено)
     const authRes = await fetch('https://developers.cjdropshipping.com/api2.0/v1/authentication/getAccessToken', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
