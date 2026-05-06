@@ -1,19 +1,18 @@
-// ... (начало кода с авторизацией остается прежним)
+// ... внутри блока try после выполнения поиска
+const searchData = await searchRes.json();
 
-    const searchData = await searchRes.json();
-    
-    // ПРОВЕРКА: Если CJ вернул ошибку внутри JSON
-    if (searchData.result === false) {
-      return res.status(200).json({
-        result: false,
-        error: searchData.message || "CJ API вернул ошибку"
-      });
-    }
+// Если CJ вернул ошибку в самом JSON (например, неверный токен)
+if (searchData.result === false) {
+  return res.status(200).json({
+    result: false,
+    error: searchData.message || "CJ API ошибка"
+  });
+}
 
-    // Возвращаем данные, убедившись, что list существует
-    res.status(200).json({
-      result: true,
-      data: {
-        list: searchData.data?.list || []
-      }
-    });
+// Возвращаем строго ту структуру, которую ждет popup.js
+res.status(200).json({
+  result: true,
+  data: {
+    list: searchData.data?.list || []
+  }
+});
